@@ -24,10 +24,9 @@ The passphrase will be displayed immediately, ready for you to use.
 One of the best features of PassphraseGenerator is that it has no external dependencies. It’s built entirely with HTML, CSS, and JavaScript. This means you can run it offline in any modern web browser without needing to install anything or deal with additional libraries. Just open the file and start generating passphrases instantly!
 
 ## How to Use
-Clone this repository:
-- git clone https://github.com/username/PassphraseGenerator.git
-- Open the HTML file: Navigate to the folder where you cloned the repo and open the index.html file in your web browser.
-- Start generating passphrases: Use the provided interface to configure your passphrase and click "Go!" to generate it.
+Just download passphrase.html and run it from any browser.
+
+You can even save it to your phone and run it in any mobile browser.
 
 ## Contributions
 Feel free to contribute! If you have ideas for new features or improvements, open an issue or submit a pull request.
