@@ -143,6 +143,10 @@ while (attempt++ < 200) {
 alert("Couldn't meet length target — try adjusting Min/Max or word count.");
 return false;
 };
+document.addEventListener("DOMContentLoaded", function() {
+  var sel = document.getElementById("profile");
+  profileChanged(sel);
+});
 </script></head><body>
 <div class="card">
 <form id="usrform" action="ok" method="get" data-type="text">
