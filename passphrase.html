@@ -52,8 +52,7 @@ var delimiters=(digits.checked?digits.value:"")+(space.checked?space.value:"")+(
 var minL=parseInt(minLen.value);
 var maxL=parseInt(maxLen.value);
 if (minL >= maxL) {
-  passphraseLen.value="";
-  passphrase.value="Error: Min must be less than Max.";
+  alert("Error: Min must be less than Max.");
   return false;
 }
 var attempt=0;
@@ -71,8 +70,7 @@ while (attempt++ < 200) {
     return false;
   }
 }
-passphraseLen.value="";
-passphrase.value="Couldn't meet length target — try adjusting Min/Max or word count.";
+alert("Couldn't meet length target — try adjusting Min/Max or word count.");
 return false;
 };
 </script></head><body>
