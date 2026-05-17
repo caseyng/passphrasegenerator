@@ -1,15 +1,74 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-div {
-  height: 80vh;
-  display: flex;
-  align-items: center;
-}
-#passphrase {
-  width: 90vw;
-  cursor: pointer;
-}
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 16px;
+    min-height: 100vh;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  p { margin: 10px 0; }
+  label { font-size: 15px; color: #444; }
+  input[type=range] { width: 100%; accent-color: #5c6bc0; display: block; margin-top: 4px; }
+  input[type=checkbox], input[type=radio] { accent-color: #5c6bc0; width: 18px; height: 18px; vertical-align: middle; }
+  input[type=number] { width: 64px; padding: 5px 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+  select { padding: 7px 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+  input[type=button] {
+    background: #5c6bc0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 15px;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  hr { border: none; border-top: 1px solid #e8e8e8; margin: 14px 0; }
+  .passphrase-wrap {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  #passphrase {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 14px 12px;
+    font-size: 17px;
+    background: #fafafa;
+    color: #222;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    display: block;
+  }
+  #strengthBar {
+    height: 5px;
+    width: 0%;
+    background: #e0e0e0;
+    transition: width 0.4s ease, background-color 0.3s ease;
+  }
+  .meta {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: #888;
+    min-height: 20px;
+    margin-top: 6px;
+  }
+  details { font-size: 13px; color: #666; margin-top: 8px; }
+  details summary { cursor: pointer; color: #5c6bc0; }
+  details p { margin: 6px 0 0; line-height: 1.5; }
 </style>
 
 <script>
@@ -74,6 +133,10 @@ while (attempt++ < 200) {
     entropy=Math.round(entropy);
     var sl=entropy<40?"Weak":entropy<60?"Fair":entropy<80?"Strong":"Very Strong";
     passphraseStrength.value=entropy+" bits — "+sl;
+    var pct=Math.min(entropy,100);
+    var color=entropy<40?"#ef5350":entropy<60?"#FFA726":entropy<80?"#66BB6A":"#2E7D32";
+    strengthBar.style.width=pct+"%";
+    strengthBar.style.backgroundColor=color;
     return false;
   }
 }
@@ -81,32 +144,39 @@ alert("Couldn't meet length target — try adjusting Min/Max or word count.");
 return false;
 };
 </script></head><body>
-<div>
+<div class="card">
 <form id="usrform" action="ok" method="get" data-type="text">
-<p><label for="count">Number of words</label> <input type="range" id="count" min="2" max="8" value="6" oninput="countInput.value=this.value" > <output id="countInput" for="count">6</output></p>
-<p>Case <input type="radio" id="pascal" name="case" value="pascal"><label for="pascal">Pascal case</label>
-<input type="radio" id="lower" name="case" value="lower" checked><label for="lower">Lower case</label></p>
+<p><label for="count">Words: <output id="countInput" for="count">6</output></label>
+<input type="range" id="count" min="2" max="8" value="6" oninput="countInput.value=this.value"></p>
+<p>Case &nbsp;
+<input type="radio" id="pascal" name="case" value="pascal"><label for="pascal"> Pascal</label> &nbsp;
+<input type="radio" id="lower" name="case" value="lower" checked><label for="lower"> Lower</label></p>
 <p>Delimiters<br/>
-<input type="checkbox" id="digits" value="0123456789"><label for="digits">Digits</label>
-<input type="checkbox" id="space" value=" " checked><label for="space">Space</label>
-<input type="checkbox" id="symbols" value="@$_*!#^|%~+"><label for="symbols">Symbols @$_*!#^|%~+</label><br/>
-<input type="checkbox" id="noLookalike"><label for="noLookalike">Exclude look-alikes (0, 1, |)</label></p>
-<p>Length<br/>
-<label for="minLen">Min <input type="number" min="12" max="24" id="minLen" value="18"></label>
-<label for="maxLen">Max <input type="number" min="25" max="128" id="maxLen" value="64"></label>
-</p>
+<input type="checkbox" id="digits" value="0123456789"><label for="digits"> Digits</label> &nbsp;
+<input type="checkbox" id="space" value=" " checked><label for="space"> Space</label> &nbsp;
+<input type="checkbox" id="symbols" value="@$_*!#^|%~+"><label for="symbols"> Symbols</label><br/>
+<input type="checkbox" id="noLookalike"><label for="noLookalike"> Exclude look-alikes (0, 1, |)</label></p>
+<p>Length &nbsp;
+<label for="minLen">Min <input type="number" min="12" max="24" id="minLen" value="18"></label> &nbsp;
+<label for="maxLen">Max <input type="number" min="25" max="128" id="maxLen" value="64"></label></p>
 <hr>
-<p><label for="profile">Quick profile:</label>
+<p><label for="profile">Profile:</label>
 <select id="profile" onchange="profileChanged(this);">
 <option value="password2">Password - 2 words</option>
 <option value="password3">Password - 3 words</option>
 <option value="passphrase4">Passphrase - 4 words</option>
 <option value="passphrase6">Passphrase - 6 words</option>
 </select> <input type="button" onclick="generate();" value="Go!"></p>
-<output id="passphraseLen"></output> <output id="passphraseStrength"></output>
+<div class="passphrase-wrap">
+<input type="text" id="passphrase" name="passphrase" readonly onclick="copyPassphrase();" title="Tap to copy" placeholder="Tap Go! to generate">
+<div id="strengthBar"></div>
+</div>
+<div class="meta">
+<output id="passphraseLen"></output>
+<output id="passphraseStrength"></output>
+</div>
 <details><summary>How is strength calculated?</summary>
-<p>Entropy (bits) = words × log₂(wordlist size) + (words−1) × log₂(delimiter pool size). Each additional word multiplies the guessing difficulty. 60+ bits is strong; 80+ bits is very strong for high-security use. See <a href="https://pages.nist.gov/800-63-4/" target="_blank">NIST SP 800-63B</a> and the <a href="https://www.eff.org/dice" target="_blank">EFF passphrase guide</a>.</p>
+<p>Entropy (bits) = words × log₂(wordlist) + (words−1) × log₂(delimiter pool). Higher entropy means exponentially more guesses to crack. 60+ bits is strong; 80+ bits is very strong. See <a href="https://pages.nist.gov/800-63-4/" target="_blank">NIST SP 800-63B</a> and the <a href="https://www.eff.org/dice" target="_blank">EFF passphrase guide</a>.</p>
 </details>
-<input type="text" id="passphrase" name="passphrase" readonly width="100%" onclick="copyPassphrase();" title="Tap to copy">
 </form>
 </div></body></html>
