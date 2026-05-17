@@ -52,6 +52,7 @@ var delimiters=(digits.checked?digits.value:"")+(space.checked?space.value:"")+(
 var minL=parseInt(minLen.value);
 var maxL=parseInt(maxLen.value);
 if (minL >= maxL) {
+  passphraseLen.value="";
   passphrase.value="Error: Min must be less than Max.";
   return false;
 }
@@ -65,10 +66,12 @@ while (attempt++ < 200) {
   }
   result=result.trim();
   if (result.length >= minL && result.length <= maxL) {
-    passphrase.value=result.length+": "+result;
+    passphrase.value=result;
+    passphraseLen.value=result.length+" chars";
     return false;
   }
 }
+passphraseLen.value="";
 passphrase.value="Couldn't meet length target — try adjusting Min/Max or word count.";
 return false;
 };
@@ -94,6 +97,7 @@ return false;
 <option value="passphrase4">Passphrase - 4 words</option>
 <option value="passphrase6">Passphrase - 6 words</option>
 </select> <input type="button" onclick="generate();" value="Go!"></p>
+<output id="passphraseLen"></output>
 <input type="text" id="passphrase" name="passphrase" readonly width="100%" onclick="copyPassphrase();" title="Tap to copy">
 </form>
 </div></body></html>
