@@ -72,6 +72,8 @@
   details { font-size: 13px; color: #666; margin-top: 8px; }
   details summary { cursor: pointer; color: #5c6bc0; }
   details p { margin: 6px 0 0; line-height: 1.5; }
+  #copyHint { margin-left: auto; color: #5c6bc0; font-size: 13px; display: none; user-select: none; }
+  #copyHint.visible { display: block; }
 </style>
 
 <script>
@@ -86,6 +88,7 @@ function pickWords(words, n) {
 
 function copyPassphrase() {
   var el = document.getElementById('passphrase');
+  if (!el.value) return;
   el.select();
   el.setSelectionRange(0, 99999);
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -93,6 +96,10 @@ function copyPassphrase() {
   } else {
     document.execCommand('copy');
   }
+  var hint = document.getElementById('copyHint');
+  hint.textContent = 'copied!';
+  clearTimeout(hint._t);
+  hint._t = setTimeout(function() { hint.textContent = 'tap to copy'; }, 1500);
 }
 
 function profileChanged(obj) {
@@ -129,6 +136,9 @@ while (attempt++ < 200) {
   result=result.trim();
   if (result.length >= minL && result.length <= maxL) {
     passphrase.value=result;
+    var hint=document.getElementById('copyHint');
+    hint.className='visible';
+    hint.textContent='tap to copy';
     passphraseLen.value=result.length+" chars";
     var wc=parseInt(count.value);
     var dp=delimiters.length;
@@ -181,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="meta">
 <output id="passphraseLen"></output>
 <output id="passphraseStrength"></output>
+<span id="copyHint">tap to copy</span>
 </div>
 <details><summary>How is strength calculated?</summary>
 <p>Entropy (bits) = words × log₂(wordlist) + (words−1) × log₂(delimiter pool). Higher entropy means exponentially more guesses to crack. 60+ bits is strong; 80+ bits is very strong. See <a href="https://pages.nist.gov/800-63-4/" target="_blank">NIST SP 800-63B</a> and the <a href="https://www.eff.org/dice" target="_blank">EFF passphrase guide</a>.</p>
